@@ -11,6 +11,11 @@ const inferredBase =
   (typeof window !== "undefined" && window.location.hostname.includes("netlify.app")
     ? RENDER_BACKEND
     : LOCAL_BACKEND);
+// Helpful runtime debug: show which API base the app will use
+try {
+  // eslint-disable-next-line no-console
+  console.log("[megaplex] API base:", inferredBase);
+} catch (e) {}
 
 const api = axios.create({
   baseURL: inferredBase,
