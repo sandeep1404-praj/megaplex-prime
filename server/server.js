@@ -9,7 +9,7 @@ const app = express();
 // CORS configuration: allow specific origins or allow all when ALLOW_ALL_ORIGINS=true
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",").map((s) => s.trim())
-  : ["http://localhost:5173", "http://megaplex-prime.netlify.app"];
+  : ["http://localhost:5173", "http://megaplex-prime.netlify.app", "https://megaplex-prime.netlify.app"];
 
 if (process.env.ALLOW_ALL_ORIGINS === "true") {
   // Accept any origin (useful when you don't want CORS to block requests)

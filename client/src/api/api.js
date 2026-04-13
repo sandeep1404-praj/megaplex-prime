@@ -1,7 +1,19 @@
 import axios from "axios";
 
+// Default local and deployed backend URLs
+const LOCAL_BACKEND = "http://localhost:5000";
+const RENDER_BACKEND = "https://megaplex-prime-sm3a.onrender.com";
+
+// If VITE_API_URL is set (recommended), use it. Otherwise, if running on Netlify or another
+// non-local host, default to the deployed Render backend. Otherwise use localhost for dev.
+const inferredBase =
+  import.meta.env.VITE_API_URL ||
+  (typeof window !== "undefined" && window.location.hostname.includes("netlify.app")
+    ? RENDER_BACKEND
+    : LOCAL_BACKEND);
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+  baseURL: inferredBase,
 });
 
 // Request interceptor
