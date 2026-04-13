@@ -6,7 +6,30 @@ const cors = require("cors");
 const app = express();
 
 // Middleware
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+// CORS configuration: allow specific origins or allow all when ALLOW_ALL_ORIGINS=true
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((s) => s.trim())
+  : ["http://localhost:5173", "http://megaplex-prime.netlify.app"];
+
+if (process.env.ALLOW_ALL_ORIGINS === "true") {
+  // Accept any origin (useful when you don't want CORS to block requests)
+  app.use(cors({ origin: true, credentials: true }));
+} else {
+  app.use(
+    cors({
+      origin: function (origin, callback) {
+        // allow requests with no origin (e.g., curl, Postman)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) !== -1) {
+          return callback(null, true);
+        }
+        return callback(new Error("CORS policy: Origin not allowed"));
+      },
+      credentials: true,
+    })
+  );
+}
+
 app.use(express.json());
 
 // MongoDB Connection

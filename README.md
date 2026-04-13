@@ -124,6 +124,32 @@ cd server
 npm run seed
 ```
 
+## Netlify (SPA) note
+
+If you're hosting the frontend on Netlify and client-side routes (for example `/admin/login`) return 404, Netlify needs to serve `index.html` for all routes so React Router can handle them.
+
+You can fix this by adding a `_redirects` file to `client/public` (already added) with the single line:
+
+```
+/* /index.html 200
+```
+
+Or by using `netlify.toml` in the repository root (also added) with a `[[redirects]]` rule that points all paths to `/index.html`.
+
+After adding either file, rebuild and redeploy the site (Netlify will pick these up during build).
+
+Rebuild locally and push to trigger Netlify deploy:
+
+```bash
+cd client
+npm run build
+git add -A
+git commit -m "Add Netlify SPA redirect"
+git push
+```
+
+If your Netlify site is configured to build from the repo, it will redeploy automatically. You can also trigger a manual redeploy from the Netlify dashboard.
+
 ## Environment Variables Summary
 
 Server `.env` (required):
@@ -135,6 +161,20 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=your_password
 PORT=5000
 ```
+
+Optional CORS configuration (server `.env`):
+
+```
+# Comma-separated list of allowed origins. Example:
+ALLOWED_ORIGINS=http://localhost:5173,http://megaplex-prime.netlify.app
+
+# Set to 'true' to accept requests from any origin (disable CORS origin checks):
+ALLOW_ALL_ORIGINS=false
+```
+
+Notes:
+- If `ALLOW_ALL_ORIGINS` is `true`, the server will accept any origin (useful when you don't want the CORS policy to block requests). Otherwise the server will only accept origins listed in `ALLOWED_ORIGINS`.
+- For your deployment, add `http://megaplex-prime.netlify.app` to `ALLOWED_ORIGINS`, or set `ALLOW_ALL_ORIGINS=true` if you prefer to disable origin checks.
 
 Client `.env` (optional):
 
